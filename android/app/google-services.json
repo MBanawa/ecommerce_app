@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "431228081311",
+    "firebase_url": "https://imercado-8c89b.firebaseio.com",
+    "project_id": "imercado-8c89b",
+    "storage_bucket": "imercado-8c89b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431228081311:android:6793fd6885e8c00249feaa",
+        "android_client_info": {
+          "package_name": "com.banawa.ecommerceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431228081311-5ksaobla0rkhgqfc9lc1fh80ktgbmdtv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBj6sDlyvC0Ozg26O6ytEWWG3Sqq2k_kCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431228081311-5ksaobla0rkhgqfc9lc1fh80ktgbmdtv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
