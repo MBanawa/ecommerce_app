@@ -7,5 +7,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   @override
-  Widget build(BuildContext context) {}
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
