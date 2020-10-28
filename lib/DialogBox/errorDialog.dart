@@ -16,7 +16,7 @@ class ErrorAlertDialog extends StatelessWidget {
           },
           color: Colors.red,
           child: Center(
-            child: Text('OK'),
+            child: Text('Return'),
           ),
         ),
       ],
