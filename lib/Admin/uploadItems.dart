@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ecommerce_app/Admin/adminShiftOrders.dart';
 import 'package:ecommerce_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -10,6 +13,8 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage>
     with AutomaticKeepAliveClientMixin<UploadPage> {
   bool get wantKeepAlive => true;
+  File _imageFile;
+
   @override
   Widget build(BuildContext context) {
     return displayAdminHomeScreen();
@@ -98,7 +103,7 @@ class _UploadPageState extends State<UploadPage>
               padding: EdgeInsets.only(top: 20.0),
               child: RaisedButton(
                 color: Colors.green,
-                onPressed: () => print('placeholder'),
+                onPressed: () => takeImage(context),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     9.0,
@@ -117,5 +122,75 @@ class _UploadPageState extends State<UploadPage>
         ),
       ),
     );
+  }
+
+  takeImage(mContext) {
+    return showDialog(
+      context: context,
+      builder: (con) {
+        return SimpleDialog(
+          title: Text(
+            'Item Image',
+            style: TextStyle(
+              color: Colors.teal,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          children: [
+            SimpleDialogOption(
+              child: Text(
+                'Take a Picture',
+                style: TextStyle(
+                  color: Colors.teal,
+                ),
+              ),
+              onPressed: capturePhotoWithCamera,
+            ),
+            SimpleDialogOption(
+              child: Text(
+                'Select from Gallery',
+                style: TextStyle(
+                  color: Colors.teal,
+                ),
+              ),
+              onPressed: pickPhotoFromGallery,
+            ),
+            SimpleDialogOption(
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.teal,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  final _picker = ImagePicker();
+  capturePhotoWithCamera() async {
+    Navigator.pop(context);
+    final pickedFile = await _picker.getImage(
+        source: ImageSource.camera, maxHeight: 680.0, maxWidth: 970.0);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      }
+    });
+  }
+
+  pickPhotoFromGallery() async {
+    Navigator.pop(context);
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      }
+    });
   }
 }
