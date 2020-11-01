@@ -92,6 +92,9 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 20.0,
+            ),
             RaisedButton(
               onPressed: () {
                 uploadAndSaveImage();
@@ -169,7 +172,7 @@ class _RegisterState extends State<Register> {
         context: context,
         builder: (c) {
           return LoadinAlertDialog(
-            message: 'Authenticating, Please wait....',
+            message: 'Processing registration, please wait....',
           );
         });
 
@@ -223,6 +226,7 @@ class _RegisterState extends State<Register> {
       'email': fUser.email,
       'name': _nametextEditingController.text.trim(),
       'url': userImageUrl,
+      EcommerceApp.userCartList: ['garbageValue']
     });
 
     await EcommerceApp.sharedPreferences
