@@ -14,7 +14,7 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage>
     with AutomaticKeepAliveClientMixin<UploadPage> {
   bool get wantKeepAlive => true;
-  File _imageFile;
+  File imageFile;
   final _picker = ImagePicker();
   void capturePhotoWithCamera() async {
     Navigator.pop(context);
@@ -22,8 +22,8 @@ class _UploadPageState extends State<UploadPage>
         source: ImageSource.camera, maxHeight: 680.0, maxWidth: 970.0);
     setState(() {
       if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-        print('Path $_imageFile');
+        imageFile = File(pickedFile.path);
+        print('Path $imageFile');
       }
     });
   }
@@ -33,8 +33,18 @@ class _UploadPageState extends State<UploadPage>
     final pickedFile = await _picker.getImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
+        imageFile = File(pickedFile.path);
+        print('Path $imageFile');
       }
+    });
+  }
+
+  pickImage(ImageSource imageSource) async {
+    Navigator.pop(context);
+    final pickedFile = await ImagePicker().getImage(source: imageSource);
+    setState(() {
+      imageFile = File(pickedFile.path);
+      print('Path $imageFile');
     });
   }
 
@@ -49,7 +59,7 @@ class _UploadPageState extends State<UploadPage>
 
   @override
   Widget build(BuildContext context) {
-    return _imageFile == null
+    return imageFile == null
         ? displayAdminHomeScreen()
         : displayAdminUploadFormScreen();
   }
@@ -178,7 +188,7 @@ class _UploadPageState extends State<UploadPage>
                   color: Colors.teal,
                 ),
               ),
-              onPressed: capturePhotoWithCamera,
+              onPressed: () => pickImage(ImageSource.camera),
             ),
             SimpleDialogOption(
               child: Text(
@@ -187,7 +197,7 @@ class _UploadPageState extends State<UploadPage>
                   color: Colors.teal,
                 ),
               ),
-              onPressed: pickPhotoFromGallery,
+              onPressed: () => pickImage(ImageSource.gallery),
             ),
             SimpleDialogOption(
               child: Text(
@@ -261,7 +271,9 @@ class _UploadPageState extends State<UploadPage>
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: FileImage(_imageFile), fit: BoxFit.cover),
+                      image: FileImage(imageFile),
+                      // fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -360,7 +372,7 @@ class _UploadPageState extends State<UploadPage>
 
   clearFormInfo() {
     setState(() {
-      _imageFile = null;
+      imageFile = null;
       _descriptionTextEditingController.clear();
       _priceTextEditingController.clear();
       _shortInfoTextEditingController.clear();
