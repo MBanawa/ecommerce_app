@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:ecommerce_app/Admin/adminShiftOrders.dart';
 import 'package:ecommerce_app/Widgets/loadingWidget.dart';
 import 'package:ecommerce_app/main.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -15,36 +15,34 @@ class _UploadPageState extends State<UploadPage>
     with AutomaticKeepAliveClientMixin<UploadPage> {
   bool get wantKeepAlive => true;
   File imageFile;
-  final _picker = ImagePicker();
-  void capturePhotoWithCamera() async {
-    Navigator.pop(context);
-    final pickedFile = await _picker.getImage(
-        source: ImageSource.camera, maxHeight: 680.0, maxWidth: 970.0);
-    setState(() {
-      if (pickedFile != null) {
-        imageFile = File(pickedFile.path);
-        print('Path $imageFile');
-      }
-    });
-  }
+  // final _picker = ImagePicker();
+  // void capturePhotoWithCamera() async {
+  //   Navigator.pop(context);
+  //   final pickedFile = await _picker.getImage(
+  //       source: ImageSource.camera, maxHeight: 680.0, maxWidth: 970.0);
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       imageFile = File(pickedFile.path);
+  //       print('Path $imageFile');
+  //     }
+  //   });
+  // }
 
-  void pickPhotoFromGallery() async {
-    Navigator.pop(context);
-    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        imageFile = File(pickedFile.path);
-        print('Path $imageFile');
-      }
-    });
-  }
+  // void pickPhotoFromGallery() async {
+  //   Navigator.pop(context);
+  //   final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       imageFile = File(pickedFile.path);
+  //     }
+  //   });
+  // }
 
   pickImage(ImageSource imageSource) async {
     Navigator.pop(context);
     final pickedFile = await ImagePicker().getImage(source: imageSource);
     setState(() {
       imageFile = File(pickedFile.path);
-      print('Path $imageFile');
     });
   }
 
@@ -217,6 +215,7 @@ class _UploadPageState extends State<UploadPage>
   }
 
   displayAdminUploadFormScreen() {
+    print('Path $imageFile');
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -272,7 +271,7 @@ class _UploadPageState extends State<UploadPage>
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FileImage(imageFile),
-                      // fit: BoxFit.cover,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
