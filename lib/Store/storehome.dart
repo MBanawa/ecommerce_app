@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/Counters/cartitemcounter.dart';
 import 'package:ecommerce_app/Models/item.dart';
 import 'package:ecommerce_app/Store/cart.dart';
+import 'package:ecommerce_app/Widgets/loadingWidget.dart';
 import 'package:ecommerce_app/Widgets/myDrawer.dart';
+import 'package:ecommerce_app/Widgets/searchBox.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 double width;
@@ -37,11 +41,12 @@ class _StoreHomeState extends State<StoreHome> {
                       Icon(
                         Icons.brightness_1,
                         size: 20.0,
-                        color: Colors.blueAccent,
+                        color: Colors.red,
                       ),
                       Positioned(
                         top: 3.0,
                         bottom: 4.0,
+                        left: 6.5,
                         child: Consumer<CartItemCounter>(
                           builder: (context, counter, _) {
                             return Text(
@@ -86,6 +91,37 @@ class _StoreHomeState extends State<StoreHome> {
           centerTitle: true,
         ),
         drawer: MyDrawer(),
+        body: CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: SearchBoxDelegate(),
+            ),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('items')
+                  .limit(15)
+                  .orderBy('publishedDate', descending: true)
+                  .snapshots(),
+              builder: (context, dataSnapshot) {
+                return !dataSnapshot.hasData
+                    ? SliverToBoxAdapter(
+                        child: Center(
+                          child: circularProgress(),
+                        ),
+                      )
+                    : SliverStaggeredGrid.countBuilder(
+                        crossAxisCount: 1,
+                        staggeredTileBuilder: (c) => StaggeredTile.fit(1),
+                        itemBuilder: (context, index) {
+                          ItemModel model = ItemModel.fromJson(
+                              dataSnapshot.data.docs[index].data);
+                        },
+                      );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

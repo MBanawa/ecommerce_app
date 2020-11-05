@@ -1,4 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/Counters/ItemQuantity.dart';
+import 'package:ecommerce_app/Counters/cartitemcounter.dart';
+import 'package:ecommerce_app/Counters/changeAddresss.dart';
+import 'package:ecommerce_app/Counters/totalMoney.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +11,7 @@ import 'dart:async';
 import 'package:ecommerce_app/Authentication/authentication.dart';
 import 'package:ecommerce_app/Config/config.dart';
 import 'package:ecommerce_app/Store/storehome.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -21,13 +26,29 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'iMercado',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.teal,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (c) => CartItemCounter(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => ItemQuantity(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => AddressChanger(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => TotalAmount(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'iMercado',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.teal,
+        ),
+        home: SplashScreen(),
       ),
-      home: SplashScreen(),
     );
   }
 }

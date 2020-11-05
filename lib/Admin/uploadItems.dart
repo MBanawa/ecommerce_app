@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -15,28 +17,6 @@ class _UploadPageState extends State<UploadPage>
     with AutomaticKeepAliveClientMixin<UploadPage> {
   bool get wantKeepAlive => true;
   File imageFile;
-  // final _picker = ImagePicker();
-  // void capturePhotoWithCamera() async {
-  //   Navigator.pop(context);
-  //   final pickedFile = await _picker.getImage(
-  //       source: ImageSource.camera, maxHeight: 680.0, maxWidth: 970.0);
-  //   setState(() {
-  //     if (pickedFile != null) {
-  //       imageFile = File(pickedFile.path);
-  //       print('Path $imageFile');
-  //     }
-  //   });
-  // }
-
-  // void pickPhotoFromGallery() async {
-  //   Navigator.pop(context);
-  //   final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     if (pickedFile != null) {
-  //       imageFile = File(pickedFile.path);
-  //     }
-  //   });
-  // }
 
   pickImage(ImageSource imageSource) async {
     Navigator.pop(context);
@@ -215,7 +195,6 @@ class _UploadPageState extends State<UploadPage>
   }
 
   displayAdminUploadFormScreen() {
-    print('Path $imageFile');
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -237,7 +216,9 @@ class _UploadPageState extends State<UploadPage>
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: clearFormInfo(),
+          onPressed: () {
+            clearFormInfo();
+          },
         ),
         title: Text(
           'New Product',
@@ -246,7 +227,7 @@ class _UploadPageState extends State<UploadPage>
         ),
         actions: [
           FlatButton(
-            onPressed: () => print('asedfasdf'),
+            onPressed: uploading ? null : () => uploadImageAndSaveItemInfo(),
             child: Text(
               'Add',
               style: TextStyle(
@@ -376,6 +357,49 @@ class _UploadPageState extends State<UploadPage>
       _priceTextEditingController.clear();
       _shortInfoTextEditingController.clear();
       _titleTextEditingController.clear();
+    });
+  }
+
+  uploadImageAndSaveItemInfo() async {
+    setState(() {
+      uploading = true;
+    });
+
+    String imageDownloadUrl = await uploadItemImage(imageFile);
+
+    saveItemInfo(imageDownloadUrl);
+  }
+
+  Future<String> uploadItemImage(mfileImage) async {
+    final StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Items');
+    StorageUploadTask uploadTask =
+        storageReference.child('product_$productId.jpg').putFile(mfileImage);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  saveItemInfo(String downloadUrl) {
+    final itemsRef = FirebaseFirestore.instance.collection('items');
+    itemsRef.doc(productId).set({
+      'shortInfo': _shortInfoTextEditingController.text.trim(),
+      'longDescription': _priceTextEditingController.text.trim(),
+      'price': _shortInfoTextEditingController.text.trim(),
+      'publishedDate': DateTime.now(),
+      'status': 'available',
+      'thumbnailUrl': downloadUrl,
+      'title': _titleTextEditingController.text.trim(),
+    });
+
+    setState(() {
+      imageFile = null;
+      uploading = false;
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
+      _descriptionTextEditingController.clear();
+      _titleTextEditingController.clear();
+      _shortInfoTextEditingController.clear();
+      _priceTextEditingController.clear();
     });
   }
 }
