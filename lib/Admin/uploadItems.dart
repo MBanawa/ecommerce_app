@@ -231,7 +231,7 @@ class _UploadPageState extends State<UploadPage>
             child: Text(
               'Add',
               style: TextStyle(
-                color: Colors.teal,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
               ),
@@ -384,8 +384,8 @@ class _UploadPageState extends State<UploadPage>
     final itemsRef = FirebaseFirestore.instance.collection('items');
     itemsRef.doc(productId).set({
       'shortInfo': _shortInfoTextEditingController.text.trim(),
-      'longDescription': _priceTextEditingController.text.trim(),
-      'price': _shortInfoTextEditingController.text.trim(),
+      'longDescription': _descriptionTextEditingController.text.trim(),
+      'price': int.parse(_priceTextEditingController.text),
       'publishedDate': DateTime.now(),
       'status': 'available',
       'thumbnailUrl': downloadUrl,

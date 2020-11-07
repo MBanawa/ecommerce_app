@@ -166,7 +166,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                       ListTile(
                         leading: Icon(
-                          Icons.home_rounded,
+                          Icons.add_location,
                           color: Colors.white,
                         ),
                         title: Text(

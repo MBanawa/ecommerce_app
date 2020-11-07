@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/Counters/cartitemcounter.dart';
 import 'package:ecommerce_app/Models/item.dart';
 import 'package:ecommerce_app/Store/cart.dart';
+import 'package:ecommerce_app/Store/product_page.dart';
 import 'package:ecommerce_app/Widgets/loadingWidget.dart';
 import 'package:ecommerce_app/Widgets/myDrawer.dart';
 import 'package:ecommerce_app/Widgets/searchBox.dart';
@@ -115,8 +116,10 @@ class _StoreHomeState extends State<StoreHome> {
                         staggeredTileBuilder: (c) => StaggeredTile.fit(1),
                         itemBuilder: (context, index) {
                           ItemModel model = ItemModel.fromJson(
-                              dataSnapshot.data.docs[index].data);
+                              dataSnapshot.data.docs[index].data());
+                          return sourceInfo(model, context);
                         },
+                        itemCount: dataSnapshot.data.docs.length,
                       );
               },
             ),
@@ -129,7 +132,174 @@ class _StoreHomeState extends State<StoreHome> {
 
 Widget sourceInfo(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return InkWell();
+  return InkWell(
+    onTap: () {
+      Route route =
+          MaterialPageRoute(builder: (c) => ProductPage(itemModel: model));
+      Navigator.pushReplacement(context, route);
+    },
+    splashColor: Colors.teal,
+    child: Padding(
+      padding: EdgeInsets.all(6.0),
+      child: Container(
+        height: 190.0,
+        width: width,
+        child: Row(
+          children: [
+            Image.network(
+              model.thumbnailUrl,
+              width: 140.0,
+              height: 140.0,
+            ),
+            SizedBox(
+              width: 4.0,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Container(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            model.title,
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Container(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            model.shortInfo,
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 12.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.teal,
+                        ),
+                        alignment: Alignment.topLeft,
+                        width: 40.0,
+                        height: 43.0,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '50%',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                              Text(
+                                'OFF',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 0.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'New Price: ',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  'PHP ',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.teal,
+                                  ),
+                                ),
+                                Text(
+                                  (model.price).toString(),
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 0.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Original Price: PHP',
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough),
+                                ),
+                                Text(
+                                  (model.price + model.price).toString(),
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Flexible(
+                    child: Container(),
+                  ),
+                  //implement cart item remove feature here
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 Widget card({Color primaryColor = Colors.redAccent, String imgPath}) {
